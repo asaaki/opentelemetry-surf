@@ -1,4 +1,4 @@
-<h1 align="center">opentelemetry-surf</h1>
+<h1 align="center">🔭🏄🏻‍♀️<br>opentelemetry-surf</h1>
 <div align="center"><strong>
 
 [OpenTelemetry][otel] integration for [Surf][surf]
@@ -43,7 +43,10 @@
 
 ```shell
 # Run jaeger in background
-docker run -d -p6831:6831/udp -p6832:6832/udp -p16686:16686 jaegertracing/all-in-one:latest
+docker run -d \
+  -p6831:6831/udp -p6832:6832/udp -p16686:16686 -p14268:14268 \
+  jaegertracing/all-in-one:latest
+
 
 # Run simple client example with tracing middleware
 cargo run --example simple
@@ -55,7 +58,7 @@ cargo run --example metrics --features isahc-metrics
 firefox http://localhost:16686/
 ```
 
-![example jaeger trace](.assets/jaeger-trace.png)
+![example jaeger trace](https://raw.githubusercontent.com/asaaki/opentelemetry-surf/main/.assets/jaeger-trace.png)
 
 ## Code example
 
