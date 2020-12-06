@@ -1,0 +1,47 @@
+[package]
+name = "opentelemetry-surf"
+version = "0.1.0"
+authors = ["Christoph Grabo <asaaki@mannaz.cc>"]
+edition = "2018"
+readme = "README.md"
+description = "OpenTelemetry integration for surf"
+homepage = "https://github.com/asaaki/opentelemetry-surf"
+repository = "https://github.com/asaaki/opentelemetry-surf"
+categories = [
+  "web-programming::http-client",
+  "web-programming",
+  "network-programming",
+  "development-tools::debugging",
+  "development-tools::profiling",
+]
+keywords = ["surf", "opentelemetry", "jaeger", "tracing", "instrumentation"]
+license = "MIT OR Apache-2.0"
+exclude = [".assets/*", ".github/*"]
+
+[features]
+default = []
+isahc-metrics = ["isahc"]
+
+[dependencies]
+http-types = "2.9"
+isahc = { version = "0.9", optional = true, default-features = false, features = ["http2"] }
+kv-log-macro = "1.0"
+opentelemetry = "0.10"
+opentelemetry-semantic-conventions = "0.2"
+surf = "2.1"
+url = "2.2"
+
+[dev-dependencies]
+async-std = { version = "1.7", features = ["attributes"] }
+femme = "2.1"
+http-client = "6.1"
+isahc = { version = "0.9", default-features = false, features = ["http2"] }
+opentelemetry = { version = "0.10", features = ["async-std"] }
+opentelemetry-jaeger = { version = "0.9", features = ["async-std"] }
+opentelemetry-tide = "0.5"
+surf = { version = "2.1", features = ["curl-client"] }
+tide = "0.15"
+
+[patch.crates-io]
+# http-client = { path = "../http-client", default-features = false, features = ["curl_client"] }
+http-client = { git = "https://github.com/asaaki/http-client", branch = "isahc-metrics" , default-features = false, features = ["curl_client"] }
