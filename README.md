@@ -1,4 +1,4 @@
-<h1 align="center">🔭🏄🏻‍♀️<br>opentelemetry-surf</h1>
+<h1 align="center"><img src="https://raw.githubusercontent.com/asaaki/opentelemetry-surf/main/.assets/opentelemetry-surf-logo.svg" width=128 height=128><br>opentelemetry-surf</h1>
 <div align="center"><strong>
 
 [OpenTelemetry][otel] integration for [Surf][surf]
@@ -68,7 +68,7 @@ firefox http://localhost:16686/
 async-std = { version = "1.7", features = ["attributes"] }
 opentelemetry = { version = "0.10", features = ["async-std"] }
 opentelemetry-jaeger = { version = "0.9", features = ["async-std"] }
-# opentelemetry-surf = "0.1" # not yet released
+opentelemetry-surf = "0.1" # not yet released
 opentelemetry-surf = { git = "https://github.com/asaaki/opentelemetry-surf", branch = "main" }
 ```
 
