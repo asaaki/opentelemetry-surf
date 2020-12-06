@@ -69,7 +69,7 @@ async-std = { version = "1.7", features = ["attributes"] }
 opentelemetry = { version = "0.10", features = ["async-std"] }
 opentelemetry-jaeger = { version = "0.9", features = ["async-std"] }
 # opentelemetry-surf = "0.1" # not yet released
-opentelemetry-surf = { git = "https://github.com/asaaki/opentelemetry-surf" }
+opentelemetry-surf = { git = "https://github.com/asaaki/opentelemetry-surf", branch = "main" }
 ```
 
 ### `client.rs`
