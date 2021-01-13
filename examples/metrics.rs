@@ -15,10 +15,12 @@ async fn main() -> std::result::Result<(), http_types::Error> {
     let otel_mw = OpenTelemetryTracingMiddleware::new(tracer);
     let client = create_client().with(otel_mw);
 
-    // let res = client.get("https://httpbin.org/get").await?;
-    // let res = client.get("https://httpbin.org/image/svg").await?;
-    // let res = client.get("https://httpbin.org/drip?duration=3&numbytes=5&code=200&delay=1").await?;
-    let res = client.get("https://httpbin.org/image/jpeg").await?;
+    // let uri = "https://httpbin.org/get";
+    // let uri = "https://httpbin.org/image/svg";
+    // let uri = "https://httpbin.org/drip?duration=3&numbytes=5&code=200&delay=1";
+    // let uri = "https://httpbin.org/image/jpeg";
+    let uri = "https://effigis.com/wp-content/uploads/2015/02/DigitalGlobe_WorldView2_50cm_8bit_Pansharpened_RGB_DRA_Rome_Italy_2009DEC10_8bits_sub_r_1.jpg";
+    let res = client.get(uri).await?;
     dbg!(res);
     Ok(())
 }

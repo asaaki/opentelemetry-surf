@@ -8,9 +8,9 @@
 //!
 //! ```toml
 //! [dependencies]
-//! async-std = {version =  "1.7", features = ["attributes"]}
-//! opentelemetry = { version = "0.10", features = ["async-std"] }
-//! opentelemetry-jaeger = { version = "0.9", features = ["async-std"] }
+//! async-std = {version =  "1.8", features = ["attributes"]}
+//! opentelemetry = { version = "0.11", features = ["async-std"] }
+//! opentelemetry-jaeger = { version = "0.10", features = ["async-std"] }
 //! opentelemetry-surf = "0.1"
 //! tide = "0.15"
 //! ```
@@ -127,7 +127,7 @@ impl<T: Tracer + Send + Sync> Middleware for OpenTelemetryTracingMiddleware<T> {
         // make sure our span can be connected to a currently open/active (remote) trace if existing
         if let Some(remote_span_ctx) = parent_cx.remote_span_context() {
             if remote_span_ctx.is_remote() {
-                span_builder = span_builder.with_parent(remote_span_ctx.clone());
+                span_builder = span_builder.with_parent_context(parent_cx.clone());
             }
         }
 

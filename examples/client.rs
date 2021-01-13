@@ -50,9 +50,9 @@ fn pipeline() -> (Tracer, Uninstall) {
 // more custom http client setup: use isahc with metrics enabled
 fn create_client() -> surf::Client {
     use http_client::isahc::IsahcClient;
-    use isahc::prelude::*;
+    use isahc::config::Configurable;
 
-    let isahc = HttpClient::builder()
+    let isahc = isahc::HttpClient::builder()
         .default_headers(&[("user-agent", "surf/isahc (with request metrics)")])
         .metrics(true)
         .build()
