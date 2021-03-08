@@ -8,11 +8,11 @@
 //!
 //! ```toml
 //! [dependencies]
-//! async-std = {version =  "1.8", features = ["attributes"]}
-//! opentelemetry = { version = "0.11", features = ["async-std"] }
-//! opentelemetry-jaeger = { version = "0.10", features = ["async-std"] }
+//! async-std = {version =  "1.9", features = ["attributes"]}
+//! opentelemetry = { version = "0.12", features = ["async-std"] }
+//! opentelemetry-jaeger = { version = "0.11", features = ["async-std"] }
 //! opentelemetry-surf = "0.1"
-//! tide = "0.15"
+//! tide = "0.16"
 //! ```
 //!
 //! ## `client.rs`

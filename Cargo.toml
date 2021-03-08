@@ -23,25 +23,22 @@ default = []
 isahc-metrics = ["isahc"]
 
 [dependencies]
-http-types = "2.9"
+http-types = "2.10"
 # depends on http-client supported isahc version
 isahc = { version = "0.9", optional = true, default-features = false, features = ["http2"] }
 kv-log-macro = "1.0"
-opentelemetry = "0.11"
-opentelemetry-semantic-conventions = "0.3"
-surf = "2.1"
+opentelemetry = "0.12"
+opentelemetry-semantic-conventions = "0.4"
+surf = "2.2"
 url = "2.2"
 
 [dev-dependencies]
-async-std = { version = "1.8", features = ["attributes"] }
+async-std = { version = "1.9", features = ["attributes"] }
 femme = "2.1"
-http-client = "6.2"
+http-client = "6.3"
 isahc = { version = "0.9", default-features = false, features = ["http2"] }
-opentelemetry = { version = "0.11", features = ["async-std"] }
-opentelemetry-jaeger = { version = "0.10", features = ["async-std"] }
+opentelemetry = { version = "0.12", features = ["async-std"] }
+opentelemetry-jaeger = { version = "0.11", features = ["async-std"] }
 opentelemetry-tide = "0.6"
-surf = { version = "2.1", features = ["curl-client"] }
-tide = "0.15"
-
-[patch.crates-io]
-http-client = { git = "https://github.com/asaaki/http-client", branch = "isahc-metrics" , default-features = false, features = ["curl_client"] }
+surf = { version = "2.2", features = ["curl-client"] }
+tide = "0.16"
