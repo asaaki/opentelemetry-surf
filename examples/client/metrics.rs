@@ -1,5 +1,4 @@
 use opentelemetry::sdk::trace::Tracer;
-use opentelemetry_jaeger::Uninstall;
 use opentelemetry_surf::OpenTelemetryTracingMiddleware;
 
 const SVC_NAME: &str = env!("CARGO_CRATE_NAME");
@@ -11,7 +10,7 @@ async fn main() -> std::result::Result<(), http_types::Error> {
     femme::with_level(femme::LevelFilter::Info);
     shared::init_global_propagator();
 
-    let (tracer, _uninstall) = pipeline();
+    let tracer = pipeline();
     let otel_mw = OpenTelemetryTracingMiddleware::new(tracer);
     let client = create_client().with(otel_mw);
 
@@ -25,10 +24,10 @@ async fn main() -> std::result::Result<(), http_types::Error> {
     Ok(())
 }
 
-fn pipeline() -> (Tracer, Uninstall) {
+fn pipeline() -> Tracer {
     opentelemetry_jaeger::new_pipeline()
         .with_service_name(SVC_NAME)
-        .install()
+        .install_batch(opentelemetry::runtime::AsyncStd)
         .expect("pipeline install failure")
 }
 

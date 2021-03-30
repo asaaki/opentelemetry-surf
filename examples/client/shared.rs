@@ -27,7 +27,3 @@ fn composite_propagator() -> TextMapCompositePropagator {
         Box::new(trace_context_propagator),
     ])
 }
-
-// make rust (analyzer) happy
-#[allow(dead_code)]
-fn main() {}

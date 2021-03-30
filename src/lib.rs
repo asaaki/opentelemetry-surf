@@ -9,16 +9,16 @@
 //! ```toml
 //! [dependencies]
 //! async-std = {version =  "1.9", features = ["attributes"]}
-//! opentelemetry = { version = "0.12", features = ["async-std"] }
-//! opentelemetry-jaeger = { version = "0.11", features = ["async-std"] }
-//! opentelemetry-surf = "0.1"
+//! opentelemetry = { version = "0.13", features = ["async-std", "rt-async-std"] }
+//! opentelemetry-jaeger = { version = "0.12", features = ["async-std"] }
+//! opentelemetry-surf = "0.2"
 //! tide = "0.16"
 //! ```
 //!
 //! ## `client.rs`
 //!
 //! ```rust,no_run
-
+//! // TODO ...
 //! ```
 
 #![forbid(unsafe_code)]
@@ -65,7 +65,7 @@ impl<T: Tracer> OpenTelemetryTracingMiddleware<T> {
     /// ```rust,no_run
     /// # #[async_std::main]
     /// # async fn main() -> surf::Result<()> {
-    /// let (tracer, _uninstall) = opentelemetry_jaeger::new_pipeline().install().unwrap();
+    /// let tracer = opentelemetry_jaeger::new_pipeline().install_batch(opentelemetry::runtime::AsyncStd)?;
     /// let otel_mw = opentelemetry_surf::OpenTelemetryTracingMiddleware::new(tracer);
     /// let client = surf::client().with(otel_mw);
     /// let res = client.get("https://httpbin.org/get").await?;
