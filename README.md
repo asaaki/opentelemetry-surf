@@ -1,7 +1,7 @@
 <h1 align="center"><img src="https://raw.githubusercontent.com/asaaki/opentelemetry-surf/main/.assets/opentelemetry-surf-logo.svg" width=128 height=128><br>opentelemetry-surf</h1>
 <div align="center"><strong>
 
-[OpenTelemetry][otel] integration for [Surf][surf]
+[OpenTelemetry] integration for [Surf]
 
 </strong></div><br />
 
@@ -111,8 +111,8 @@ be dual licensed as above, without any additional terms or conditions.
 
 
 <!-- links -->
-[otel]: https://crates.io/crates/opentelemetry
+[OpenTelemetry]: https://crates.io/crates/opentelemetry
+[Surf]: https://crates.io/crates/surf
+[Tide]: https://crates.io/crates/tide
 [otel-tide]: https://crates.io/crates/opentelemetry-tide
-[surf]: https://crates.io/crates/surf
-[tide]: https://crates.io/crates/tide
 [http-rs]: https://github.com/http-rs
