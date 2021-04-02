@@ -31,7 +31,8 @@
 #![deny(unused_results)]
 #![doc(
     test(attr(allow(unused_variables), deny(warnings))),
-    html_logo_url = "https://raw.githubusercontent.com/asaaki/opentelemetry-surf/main/.assets/opentelemetry-surf-logo.svg"
+    html_favicon_url = "https://raw.githubusercontent.com/asaaki/opentelemetry-surf/main/.assets/favicon.ico",
+    html_logo_url = "https://raw.githubusercontent.com/asaaki/opentelemetry-surf/main/.assets/docs.png"
 )]
 
 use http_types::headers::{HeaderName, HeaderValue};
