@@ -35,7 +35,7 @@ Additional changes to original format:
 
 [Unreleased]: https://github.com/asaaki/opentelemetry-surf/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/asaaki/opentelemetry-surf/compare/v0.1.1...v0.2.0
-[0.2.0]: https://github.com/asaaki/opentelemetry-surf/compare/v0.1.0...v0.1.1
+[0.1.1]: https://github.com/asaaki/opentelemetry-surf/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/asaaki/opentelemetry-surf/commit/fceb3722ff2a317ce4b1e7d669978885d77105c5
 
 [bbigras]: https://github.com/bbigras
