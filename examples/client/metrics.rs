@@ -21,6 +21,8 @@ async fn main() -> std::result::Result<(), http_types::Error> {
     let uri = "https://effigis.com/wp-content/uploads/2015/02/DigitalGlobe_WorldView2_50cm_8bit_Pansharpened_RGB_DRA_Rome_Italy_2009DEC10_8bits_sub_r_1.jpg";
     let res = client.get(uri).await?;
     dbg!(res);
+
+    opentelemetry::global::shutdown_tracer_provider();
     Ok(())
 }
 
