@@ -30,13 +30,16 @@
   </a>
 </div>
 
+Add OpenTelemetry tracing support to your [Surf] clients.
+Be part of the new observability movement!
 
 ## Notes
 
-* It is heavily inspired by [opentelemetry-tide][otel-tide] crate; surf and tide share very similar middleware structure. Thank you, dear [@http-rs][http-rs] folks! 🙇🏻‍♂️
+* It is heavily inspired by [opentelemetry-tide] crate; _surf_ and _tide_ share very similar middleware structure.
+  Thank you, dear [@http-rs] folks! 🙇🏻‍♂️
 * It only implements very basic request tracing on the middleware layer.
-  If something is missing, create a PR or open an issue and describe your desired feature.
-* (soon) It records http request/response life cycle events when used with isahc and its metrics enabled. _(needs a change in http-client crate)_
+  If something is missing, please open an issue and describe your desired feature or create a PR with a change.
+* It can record http request/response life cycle events when used with isahc and its metrics feature enabled.
 * You probably do not want to use it in production. 🤷
 
 ## How to use
@@ -65,12 +68,10 @@ firefox http://localhost:16686/
 ### `Cargo.toml`
 
 ```toml
-async-std = { version = "1.8", features = ["attributes"] }
-opentelemetry = { version = "0.11", features = ["async-std"] }
-opentelemetry-jaeger = { version = "0.10", features = ["async-std"] }
-opentelemetry-surf = "0.1"
-# or latest development changes:
-opentelemetry-surf = { git = "https://github.com/asaaki/opentelemetry-surf", branch = "main" }
+async-std = { version = "1.9", features = ["attributes"] }
+opentelemetry = { version = "0.13", features = ["async-std", "rt-async-std"] }
+opentelemetry-jaeger = { version = "0.12", features = ["async-std"] }
+opentelemetry-surf = "0.2"
 ```
 
 ### `client.rs`
@@ -78,20 +79,31 @@ opentelemetry-surf = { git = "https://github.com/asaaki/opentelemetry-surf", bra
 ```rust
 #[async_std::main]
 async fn main() -> surf::Result<()> {
-    let (tracer, _uninstall) = opentelemetry_jaeger::new_pipeline().install().unwrap();
+    let tracer = opentelemetry_jaeger::new_pipeline().install_batch(opentelemetry::runtime::AsyncStd)?;
     let otel_mw = opentelemetry_surf::OpenTelemetryTracingMiddleware::new(tracer);
     let client = surf::client().with(otel_mw);
     let res = client.get("https://httpbin.org/get").await?;
     dbg!(res);
+
+    opentelemetry::global::shutdown_tracer_provider();
     Ok(())
 }
 ```
 
-## Cargo Features:
+## Cargo Features
+
+|            flag | description |
+| --------------: | :---------- |
+| `isahc-metrics` | enables more details when using a custom ishac client configuration, see `examples/client/metrics.rs` for details |
 
 ## Safety
-This crate uses ``#![forbid(unsafe_code)]`` to ensure everything is implemented in
-100% Safe Rust.
+
+This crate uses ``#![forbid(unsafe_code)]`` to ensure everything is implemented in 100% Safe Rust.
+
+<!-- links -->
+[Surf]: https://crates.io/crates/surf
+[opentelemetry-tide]: https://crates.io/crates/opentelemetry-tide
+[@http-rs]: https://github.com/http-rs
 
 ## License
 
@@ -113,6 +125,3 @@ be dual licensed as above, without any additional terms or conditions.
 <!-- links -->
 [OpenTelemetry]: https://crates.io/crates/opentelemetry
 [Surf]: https://crates.io/crates/surf
-[Tide]: https://crates.io/crates/tide
-[otel-tide]: https://crates.io/crates/opentelemetry-tide
-[http-rs]: https://github.com/http-rs

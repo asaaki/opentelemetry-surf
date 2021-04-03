@@ -1,25 +1,81 @@
-//! # opentelemetry-tide
-//!
-//! OpenTelemetry integration for Tide
-//!
-//! # Example
-//!
-//! ## `Cargo.toml`
-//!
-//! ```toml
-//! [dependencies]
-//! async-std = {version =  "1.9", features = ["attributes"]}
-//! opentelemetry = { version = "0.13", features = ["async-std", "rt-async-std"] }
-//! opentelemetry-jaeger = { version = "0.12", features = ["async-std"] }
-//! opentelemetry-surf = "0.2"
-//! tide = "0.16"
-//! ```
-//!
-//! ## `client.rs`
-//!
-//! ```rust,no_run
-//! // TODO ...
-//! ```
+/*!
+Add OpenTelemetry tracing support to your [Surf] clients.
+Be part of the new observability movement!
+
+# Notes
+
+* It is heavily inspired by [opentelemetry-tide] crate; _surf_ and _tide_ share very similar middleware structure.
+  Thank you, dear [@http-rs] folks! 🙇🏻‍♂️
+* It only implements very basic request tracing on the middleware layer.
+  If something is missing, please open an issue and describe your desired feature or create a PR with a change.
+* It can record http request/response life cycle events when used with isahc and its metrics feature enabled.
+* You probably do not want to use it in production. 🤷
+
+# How to use
+
+```shell
+# Run jaeger in background
+docker run -d \
+  -p6831:6831/udp -p6832:6832/udp -p16686:16686 -p14268:14268 \
+  jaegertracing/all-in-one:latest
+
+
+# Run simple client example with tracing middleware
+cargo run --example simple
+
+# Run metrics client example (uses isahc with metrics enabled)
+cargo run --example metrics --features isahc-metrics
+
+# Open browser and view the traces
+firefox http://localhost:16686/
+```
+
+![example jaeger trace](https://raw.githubusercontent.com/asaaki/opentelemetry-surf/main/.assets/jaeger-trace.png)
+
+# Code example
+
+## `Cargo.toml`
+
+```toml
+async-std = { version = "1.9", features = ["attributes"] }
+opentelemetry = { version = "0.13", features = ["async-std", "rt-async-std"] }
+opentelemetry-jaeger = { version = "0.12", features = ["async-std"] }
+opentelemetry-surf = "0.2"
+```
+
+## `client.rs`
+
+```rust,no_run
+#[async_std::main]
+async fn main() -> surf::Result<()> {
+    let tracer = opentelemetry_jaeger::new_pipeline().install_batch(opentelemetry::runtime::AsyncStd)?;
+    let otel_mw = opentelemetry_surf::OpenTelemetryTracingMiddleware::new(tracer);
+    let client = surf::client().with(otel_mw);
+    let res = client.get("https://httpbin.org/get").await?;
+    dbg!(res);
+
+    opentelemetry::global::shutdown_tracer_provider();
+    Ok(())
+}
+```
+
+# Cargo Features
+
+|            flag | description |
+| --------------: | :---------- |
+| `isahc-metrics` | enables more details when using a custom ishac client configuration, see `examples/client/metrics.rs` for details |
+
+# Safety
+
+This crate uses ``#![forbid(unsafe_code)]`` to ensure everything is implemented in 100% Safe Rust.
+
+<!-- links -->
+[Surf]: https://crates.io/crates/surf
+[opentelemetry-tide]: https://crates.io/crates/opentelemetry-tide
+[@http-rs]: https://github.com/http-rs
+*/
+
+// !!! GENERATE README WITH: cargo readme > README.md
 
 #![forbid(unsafe_code)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
@@ -59,21 +115,23 @@ pub struct OpenTelemetryTracingMiddleware<T: Tracer> {
 }
 
 impl<T: Tracer> OpenTelemetryTracingMiddleware<T> {
-    /// Instantiate the middleware
-    ///
-    /// # Examples
-    ///
-    /// ```rust,no_run
-    /// # #[async_std::main]
-    /// # async fn main() -> surf::Result<()> {
-    /// let tracer = opentelemetry_jaeger::new_pipeline().install_batch(opentelemetry::runtime::AsyncStd)?;
-    /// let otel_mw = opentelemetry_surf::OpenTelemetryTracingMiddleware::new(tracer);
-    /// let client = surf::client().with(otel_mw);
-    /// let res = client.get("https://httpbin.org/get").await?;
-    /// dbg!(res);
-    /// Ok(())
-    /// # }
-    /// ```
+    /**
+    Instantiate the middleware
+
+    # Examples
+
+    ```rust,no_run
+    # #[async_std::main]
+    # async fn main() -> surf::Result<()> {
+    let tracer = opentelemetry_jaeger::new_pipeline().install_batch(opentelemetry::runtime::AsyncStd)?;
+    let otel_mw = opentelemetry_surf::OpenTelemetryTracingMiddleware::new(tracer);
+    let client = surf::client().with(otel_mw);
+    let res = client.get("https://httpbin.org/get").await?;
+    dbg!(res);
+    Ok(())
+    # }
+    ```
+    */
     pub fn new(tracer: T) -> Self {
         Self { tracer }
     }
