@@ -1,6 +1,7 @@
 //! Example client for testing distributed tracing
 //!
-//! Start the server example first, then call this client.
+//! Start a traceable server on port 3000 first, then call this client.
+//! You can find example servers at <https://github.com/asaaki/opentelemetry-tide>.
 
 use opentelemetry::sdk::trace::Tracer;
 use opentelemetry::KeyValue;
