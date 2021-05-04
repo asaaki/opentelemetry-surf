@@ -36,7 +36,7 @@ default = []
 isahc-metrics = ["isahc"]
 
 [dependencies]
-http-types = "2.10"
+http-types = "2.11"
 # depends on http-client supported isahc version
 isahc = { version = "0.9", optional = true, default-features = false, features = ["http2"] }
 kv-log-macro = "1.0"

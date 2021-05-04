@@ -10,6 +10,12 @@ Additional changes to original format:
 - `Thank you for your contribution` for shout-outs to the community
 
 ## [Unreleased]
+### Cosmetic
+- Ignore "RUSTSEC-2020-0056: stdweb is unmaintained" (#5)
+- Ignore aes related audits until upstream dependencies have been updated
+  - Ignore "RUSTSEC-2021-0059: `aesni` has been merged into the `aes` crate"
+  - Ignore "RUSTSEC-2021-0060: `aes-soft` has been merged into the `aes` crate"
+- Use cargo audit directly, as `actions-rs/audit-check` does not support ignore option
 
 ## [0.2.0] - 2021-04-03
 ### Changed
