@@ -1,10 +1,12 @@
 # https://github.com/RustSec/cargo-audit/blob/main/audit.toml.example
 
 [advisories]
-# last 2 are about aes merges;
+# 59+60 are about aes merges;
 # should resolve once the downstream chain got some updates:
-# http_types -> cookie (0.15.1+) -> aes-gcm (0.9.0+) -> aes (0.7.0+)
-ignore = ["RUSTSEC-2020-0056", "RUSTSEC-2021-0059", "RUSTSEC-2021-0060"]
+# http_types -> cookie (0.15.1+) -> aes-gcm (0.9.1+) -> aes (0.7.0+)
+# 64 is about project renaming, old crate name won't see any updates anymore (cpuid-bool)
+# http_types -> cookie (0.15.1+) -> aes-gcm (0.9.1+) -> ghash (0.4.0+) -> polyval (0.5.0+) -> cpufeatures
+ignore = ["RUSTSEC-2020-0056", "RUSTSEC-2021-0059", "RUSTSEC-2021-0060", "RUSTSEC-2021-0064"]
 informational_warnings = ["unmaintained", "unsound"]
 
 [output]
