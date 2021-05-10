@@ -71,7 +71,7 @@ firefox http://localhost:16686/
 async-std = { version = "1.9", features = ["attributes"] }
 opentelemetry = { version = "0.14", features = ["async-std", "rt-async-std"] }
 opentelemetry-jaeger = { version = "0.13", features = ["async-std"] }
-opentelemetry-surf = "0.2"
+opentelemetry-surf = "0.3"
 ```
 
 ### `client.rs`
