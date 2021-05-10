@@ -10,6 +10,9 @@ Additional changes to original format:
 - `Thank you for your contribution` for shout-outs to the community
 
 ## [Unreleased]
+### Changed
+- Update dependencies and adapt code accordingly
+
 ### Cosmetic
 - Ignore "RUSTSEC-2020-0056: stdweb is unmaintained" (#5)
 - Ignore aes related audits until upstream dependencies have been updated
