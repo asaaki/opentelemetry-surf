@@ -25,6 +25,7 @@ async fn main() -> std::result::Result<(), http_types::Error> {
     let res = client.get("http://localhost:3000/").recv_string().await?;
     dbg!(res);
 
+    opentelemetry::global::force_flush_tracer_provider();
     opentelemetry::global::shutdown_tracer_provider();
     Ok(())
 }

@@ -6,6 +6,7 @@ async fn main() -> surf::Result<()> {
     let res = client.get("https://httpbin.org/get").await?;
     dbg!(res);
 
+    opentelemetry::global::force_flush_tracer_provider();
     opentelemetry::global::shutdown_tracer_provider();
     Ok(())
 }
