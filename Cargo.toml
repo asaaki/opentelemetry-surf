@@ -41,7 +41,7 @@ http-types = "2.11"
 isahc = { version = "0.9", optional = true, default-features = false, features = ["http2"] }
 kv-log-macro = "1.0"
 opentelemetry = "0.15"
-opentelemetry-semantic-conventions = "0.7"
+opentelemetry-semantic-conventions = "0.8"
 surf = "2.2"
 url = "2.2"
 
