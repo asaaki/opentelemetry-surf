@@ -11,6 +11,22 @@ Additional changes to original format:
 
 ## [Unreleased]
 
+## [0.5.0] - 2021-10-03 — _German Unity Edition_
+### Changed
+- Update dependencies
+
+  ```toml
+  [dependencies]
+  http-types = "2.12"
+  opentelemetry = "0.16"
+  opentelemetry-semantic-conventions = "0.8"
+  surf = "2.3"
+  ```
+
+### Cosmetic
+- Use Rust 1.54's new feature to include the README content into the crate doc via a macro call;
+  see <https://blog.rust-lang.org/2021/07/29/Rust-1.54.0.html#attributes-can-invoke-function-like-macros>
+
 ## [0.4.0] - 2021-07-28
 ### Changed
 - Update dependencies
@@ -48,7 +64,8 @@ Additional changes to original format:
 ## [0.1.0] - 2020-12-06
 **Initial release**
 
-[Unreleased]: https://github.com/asaaki/opentelemetry-surf/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/asaaki/opentelemetry-surf/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/asaaki/opentelemetry-surf/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/asaaki/opentelemetry-surf/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/asaaki/opentelemetry-surf/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/asaaki/opentelemetry-surf/compare/v0.1.1...v0.2.0
