@@ -68,10 +68,10 @@ firefox http://localhost:16686/
 ### `Cargo.toml`
 
 ```toml
-async-std = { version = "1.9", features = ["attributes"] }
-opentelemetry = { version = "0.15", features = ["async-std", "rt-async-std"] }
-opentelemetry-jaeger = { version = "0.14", features = ["async-std"] }
-opentelemetry-surf = "0.4"
+async-std = { version = "1.10", features = ["attributes"] }
+opentelemetry = { version = "0.16", features = ["rt-async-std"] }
+opentelemetry-jaeger = { version = "0.15", features = ["rt-async-std"] }
+opentelemetry-surf = "0.5"
 ```
 
 ### `client.rs`
@@ -100,11 +100,6 @@ async fn main() -> surf::Result<()> {
 
 This crate uses ``#![forbid(unsafe_code)]`` to ensure everything is implemented in 100% Safe Rust.
 
-<!-- links -->
-[Surf]: https://crates.io/crates/surf
-[opentelemetry-tide]: https://crates.io/crates/opentelemetry-tide
-[@http-rs]: https://github.com/http-rs
-
 ## License
 
 <sup>
@@ -125,3 +120,5 @@ be dual licensed as above, without any additional terms or conditions.
 <!-- links -->
 [OpenTelemetry]: https://crates.io/crates/opentelemetry
 [Surf]: https://crates.io/crates/surf
+[opentelemetry-tide]: https://crates.io/crates/opentelemetry-tide
+[@http-rs]: https://github.com/http-rs
