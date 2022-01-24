@@ -51,5 +51,5 @@ femme = "2.1"
 http-client = "6.5"
 isahc = { version = "0.9", default-features = false, features = ["http2"] }
 opentelemetry = { version = "0.16", features = ["rt-async-std"] }
-opentelemetry-jaeger = { version = "0.15", features = ["rt-async-std"] }
+opentelemetry-jaeger = { version = "0.16", features = ["rt-async-std"] }
 surf = { version = "2.3", features = ["curl-client"] }
