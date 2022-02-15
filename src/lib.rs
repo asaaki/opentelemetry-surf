@@ -92,6 +92,11 @@ impl OpenTelemetryTracingMiddleware {
 
 #[surf::utils::async_trait]
 impl Middleware for OpenTelemetryTracingMiddleware {
+    /// signature with `#[async_trait]` macro sugar:
+    /// ```
+    /// async fn handle(&self, mut req: Request, client: Client, next: Next<'_>)
+    ///     -> Result<Response, http_types::Error>
+    /// ```
     async fn handle(&self, mut req: Request, client: Client, next: Next<'_>) -> Result<Response, http_types::Error> {
         // if request object already has some tracing headers, use them
         // (maybe another middleware or a request builder have injected them)
