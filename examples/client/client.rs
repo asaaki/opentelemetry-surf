@@ -3,8 +3,13 @@
 //! Start a traceable server on port 3000 first, then call this client.
 //! You can find example servers at <https://github.com/asaaki/opentelemetry-tide>.
 
-use opentelemetry::sdk::trace::Tracer;
-use opentelemetry::KeyValue;
+use opentelemetry::{
+    sdk::{
+        trace::{self, Tracer},
+        Resource,
+    },
+    KeyValue,
+};
 use opentelemetry_surf::OpenTelemetryTracingMiddleware;
 
 const SVC_NAME: &str = env!("CARGO_CRATE_NAME");
@@ -18,11 +23,11 @@ async fn main() -> std::result::Result<(), http_types::Error> {
     femme::with_level(femme::LevelFilter::Info);
     shared::init_global_propagator();
 
-    let tracer = pipeline();
-    let otel_mw = OpenTelemetryTracingMiddleware::new(tracer);
+    let _tracer = pipeline();
+    let otel_mw = OpenTelemetryTracingMiddleware::default();
     let client = create_client().with(otel_mw);
 
-    let res = client.get("http://localhost:3000/").recv_string().await?;
+    let res = client.get("http://localhost:4000/").recv_string().await?;
     dbg!(res);
 
     opentelemetry::global::force_flush_tracer_provider();
@@ -45,7 +50,7 @@ fn tags() -> Vec<KeyValue> {
 fn pipeline() -> Tracer {
     opentelemetry_jaeger::new_pipeline()
         .with_service_name(SVC_NAME)
-        .with_tags(tags())
+        .with_trace_config(trace::config().with_resource(Resource::new(tags())))
         .install_batch(opentelemetry::runtime::AsyncStd)
         .expect("pipeline install failure")
 }

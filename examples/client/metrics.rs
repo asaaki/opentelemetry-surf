@@ -10,8 +10,8 @@ async fn main() -> std::result::Result<(), http_types::Error> {
     femme::with_level(femme::LevelFilter::Info);
     shared::init_global_propagator();
 
-    let tracer = pipeline();
-    let otel_mw = OpenTelemetryTracingMiddleware::new(tracer);
+    let _tracer = pipeline();
+    let otel_mw = OpenTelemetryTracingMiddleware::default();
     let client = create_client().with(otel_mw);
 
     // let uri = "https://httpbin.org/get";
