@@ -93,7 +93,7 @@ impl OpenTelemetryTracingMiddleware {
 #[surf::utils::async_trait]
 impl Middleware for OpenTelemetryTracingMiddleware {
     /// signature with `#[async_trait]` macro sugar:
-    /// ```
+    /// ```rust,ignore
     /// async fn handle(&self, mut req: Request, client: Client, next: Next<'_>)
     ///     -> Result<Response, http_types::Error>
     /// ```
