@@ -16,8 +16,8 @@
 use http_types::headers::{HeaderName, HeaderValue};
 use kv_log_macro as log;
 use opentelemetry::{
-    global,
-    trace::{FutureExt, Span, SpanKind, StatusCode, TraceContextExt, Tracer},
+    global::{self, BoxedTracer},
+    trace::{FutureExt, Span, SpanKind, StatusCode, TraceContextExt, Tracer, TracerProvider},
     Context,
 };
 use opentelemetry_semantic_conventions::{resource, trace};
@@ -30,13 +30,21 @@ use url::Url;
 const CRATE_NAME: &str = env!("CARGO_CRATE_NAME");
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-/// The middleware struct to be used in tide
-#[derive(Default, Clone, Debug)]
-pub struct OpenTelemetryTracingMiddleware<T: Tracer> {
-    tracer: T,
+/// The middleware struct to be used in surf
+#[derive(Debug)]
+pub struct OpenTelemetryTracingMiddleware {
+    tracer: BoxedTracer,
 }
 
-impl<T: Tracer> OpenTelemetryTracingMiddleware<T> {
+impl Default for OpenTelemetryTracingMiddleware {
+    /// Instantiate the middleware with the global tracer as default;
+    /// see [OpenTelemetryTracingMiddleware::new_from_global] for details/example.
+    fn default() -> Self {
+        Self::new_from_global()
+    }
+}
+
+impl OpenTelemetryTracingMiddleware {
     /**
     Instantiate the middleware
 
@@ -45,7 +53,8 @@ impl<T: Tracer> OpenTelemetryTracingMiddleware<T> {
     ```rust,no_run
     # #[async_std::main]
     # async fn main() -> surf::Result<()> {
-    let tracer = opentelemetry_jaeger::new_pipeline().install_batch(opentelemetry::runtime::AsyncStd)?;
+    let _tracer = opentelemetry_jaeger::new_pipeline().install_batch(opentelemetry::runtime::AsyncStd)?;
+    let tracer = global::tracer("my-client");
     let otel_mw = opentelemetry_surf::OpenTelemetryTracingMiddleware::new(tracer);
     let client = surf::client().with(otel_mw);
     let res = client.get("https://httpbin.org/get").await?;
@@ -54,13 +63,35 @@ impl<T: Tracer> OpenTelemetryTracingMiddleware<T> {
     # }
     ```
     */
-    pub fn new(tracer: T) -> Self {
+    pub fn new(tracer: BoxedTracer) -> Self {
         Self { tracer }
+    }
+
+    /**
+    Instantiate the middleware with the global tracer
+
+    # Examples
+
+    ```rust,no_run
+    # #[async_std::main]
+    # async fn main() -> surf::Result<()> {
+    let _tracer = opentelemetry_jaeger::new_pipeline().install_batch(opentelemetry::runtime::AsyncStd)?;
+    let otel_mw = opentelemetry_surf::OpenTelemetryTracingMiddleware::new_from_global();
+    let client = surf::client().with(otel_mw);
+    let res = client.get("https://httpbin.org/get").await?;
+    dbg!(res);
+    Ok(())
+    # }
+    ```
+    */
+    pub fn new_from_global() -> Self {
+        let tracer = global::tracer_provider().versioned_tracer(crate::CRATE_NAME, Some(crate::VERSION), None);
+        Self::new(tracer)
     }
 }
 
 #[surf::utils::async_trait]
-impl<T: Tracer + Send + Sync> Middleware for OpenTelemetryTracingMiddleware<T> {
+impl Middleware for OpenTelemetryTracingMiddleware {
     async fn handle(&self, mut req: Request, client: Client, next: Next<'_>) -> Result<Response, http_types::Error> {
         // if request object already has some tracing headers, use them
         // (maybe another middleware or a request builder have injected them)
@@ -99,18 +130,18 @@ impl<T: Tracer + Send + Sync> Middleware for OpenTelemetryTracingMiddleware<T> {
             attributes.push(trace::HTTP_REQUEST_CONTENT_LENGTH.i64(len));
         }
 
-        let mut span_builder = self
+        let span_builder = self
             .tracer
             .span_builder(format!("{} {}", method, url))
             .with_kind(SpanKind::Client)
             .with_attributes(attributes);
 
         // make sure our span can be connected to a currently open/active (remote) trace if existing
-        if parent_cx.span().span_context().is_remote() {
-            span_builder = span_builder.with_parent_context(parent_cx.clone());
-        }
-
-        let mut span = span_builder.start(&self.tracer);
+        let mut span = if parent_cx.span().span_context().is_remote() {
+            span_builder.start_with_context(&self.tracer, &parent_cx)
+        } else {
+            span_builder.start(&self.tracer)
+        };
         span.add_event("request.started".to_owned(), vec![]);
         let cx = &Context::current_with_span(span);
 
@@ -179,9 +210,9 @@ impl<T: Tracer + Send + Sync> Middleware for OpenTelemetryTracingMiddleware<T> {
         if let Some(metrics) = &res.ext::<isahc::Metrics>() {
             use opentelemetry::KeyValue;
 
-            span.add_event_with_timestamp("request_start".into(), req_start, vec![]);
+            span.add_event_with_timestamp("request_start", req_start, vec![]);
             span.add_event_with_timestamp(
-                "name_lookup".into(),
+                "name_lookup",
                 req_start + metrics.name_lookup_time(),
                 vec![KeyValue::new(
                     "name_lookup_time",
@@ -189,7 +220,7 @@ impl<T: Tracer + Send + Sync> Middleware for OpenTelemetryTracingMiddleware<T> {
                 )],
             );
             span.add_event_with_timestamp(
-                "secure_connect".into(),
+                "secure_connect",
                 req_start + metrics.secure_connect_time(),
                 vec![KeyValue::new(
                     "secure_connect_time",
@@ -197,12 +228,12 @@ impl<T: Tracer + Send + Sync> Middleware for OpenTelemetryTracingMiddleware<T> {
                 )],
             );
             span.add_event_with_timestamp(
-                "connect".into(),
+                "connect",
                 req_start + metrics.connect_time(),
                 vec![KeyValue::new("connect_time", format_duration(metrics.connect_time()))],
             );
             span.add_event_with_timestamp(
-                "transfer_start".into(),
+                "transfer_start",
                 req_start + metrics.transfer_start_time(),
                 vec![KeyValue::new(
                     "transfer_start_time",
@@ -210,7 +241,7 @@ impl<T: Tracer + Send + Sync> Middleware for OpenTelemetryTracingMiddleware<T> {
                 )],
             );
             span.add_event_with_timestamp(
-                "transfer_end".into(),
+                "transfer_end",
                 req_start + metrics.total_time(),
                 vec![
                     KeyValue::new("transfer_time", format_duration(metrics.transfer_time())),
@@ -218,7 +249,7 @@ impl<T: Tracer + Send + Sync> Middleware for OpenTelemetryTracingMiddleware<T> {
                 ],
             );
             span.add_event_with_timestamp(
-                "redirect".into(),
+                "redirect",
                 req_start + metrics.redirect_time(),
                 vec![KeyValue::new("redirect_time", format_duration(metrics.redirect_time()))],
             );
