@@ -40,8 +40,8 @@ http-types = "2.12"
 # depends on http-client supported isahc version
 isahc = { version = "0.9", optional = true, default-features = false, features = ["http2"] }
 kv-log-macro = "1.0"
-opentelemetry = "0.16"
-opentelemetry-semantic-conventions = "0.8"
+opentelemetry = "0.17"
+opentelemetry-semantic-conventions = "0.9"
 surf = "2.3"
 url = "2.2"
 
@@ -50,6 +50,7 @@ async-std = { version = "1.10", features = ["attributes"] }
 femme = "2.1"
 http-client = "6.5"
 isahc = { version = "0.9", default-features = false, features = ["http2"] }
-opentelemetry = { version = "0.16", features = ["rt-async-std"] }
-opentelemetry-jaeger = { version = "0.15", features = ["rt-async-std"] }
+opentelemetry = { version = "0.17", features = ["rt-async-std"] }
+opentelemetry-jaeger = { version = "0.16", features = ["rt-async-std"] }
+opentelemetry-surf = { path = ".", features = ["isahc-metrics"] }
 surf = { version = "2.3", features = ["curl-client"] }
